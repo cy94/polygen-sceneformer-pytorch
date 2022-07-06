@@ -1,6 +1,6 @@
-# dlcv-ss20
+# Polygen and Sceneformer in Pytorch
 
-DLCV Practical Course - SS20
+A less clean version of Sceneformer, with an implementation of [PolyGen](https://arxiv.org/abs/2002.10880) in Pytorch.
 
 # Setup
 ## Using conda 
@@ -11,32 +11,8 @@ conda install --file environment.yaml
 pip install nonechucks
 pip install git+https://github.com/PytorchLightning/pytorch-lightning.git@master --upgrade
 ```
-Install [kaolin](https://github.com/NVIDIAGameWorks/kaolin/) according to the instructions
-on the official page.
-
-# Run tests
-Small parts of functionality are tested with unit tests. Test data is in
-`tests/data`
-```
-python -m pytest
-```
-To print something during the tests, add the print statements and run
-```
-python -m pytest -s
-```
 
 # Basic Examples
-## Pointnet classification + Tensorboard
-First configure the experiment. Set the `data_path` and other values in `pointnet2_classification.yaml`. Then run 
-
-```
-python pointnet2_classification.py
-```
-
-Look at the tensorboard plot using 
-```
-tensorboard --logdir=PN2classification/v2
-```
 
 # PolyGen 
 ## Augmented meshes
