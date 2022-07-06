@@ -1,0 +1,72 @@
+data:
+    name: shapenet
+    categories: ['table']
+    # path to PLY files
+    data_path: /shared/data/ShapeNetCore.v1/
+    list_path: tests/data/lists/table.txt
+    out_path: tests/data/outputs
+    # path to read/write models
+    model_dir: tests/data/model_outputs
+
+model:
+    vertex_model:
+        vertex_start_token: 256
+        vertex_stop_token: 257
+        vertex_pad_token: 258
+        # maximum coordinate sequence length
+        # eg: start z y x z y x stop -> length = 8
+        max_seq_len: 512
+        # type of embedding: discrete/continuous
+        # (discrete not yet supported)
+        emb_type: continuous
+        # size of the coordinate, position and value embeddings
+        emb_dim: 16
+        # number of possible values for a single coordinate - x, y or z
+        # both inclusive
+        coordinate_range: [0, 255]
+        # max number of vertices generated before discarding the output
+        max_vertices: 128
+        # number of transformer blocks
+        num_blocks: 1
+        # number of attention heads
+        num_heads: 2
+        # dimension of the transformer linear layer
+        dim_fwd: 32
+        dropout: 0.3
+    face_model:
+        max_face_seq_len: 2048
+        # here use values that dont occur in the usual face seq
+        new_face_token: 256
+        face_stop_token: 257
+        face_pad_token: 258
+        # params of the vertex encoder
+        # number of transformer blocks
+        num_blocks: 1
+        # number of attention heads
+        num_heads: 2
+        # dimension of the transformer linear layer
+        dim_fwd: 32
+        # common size of all embeddings
+        emb_dim: 32
+        # params of the face encoder (same as before)
+        max_face_num: 512
+        max_vtx_per_face: 4
+        num_heads_face: 8
+        num_blocks_face: 3
+        dim_fwd_face: 32
+        dropout: 0.3
+train:
+    batch_size: 4
+    val_batch_size: 4
+    epochs: 4000
+    vtx:
+        lr: 0.001
+        l2: 0.0001
+    face:
+        lr: 0.001
+        l2: 0.0001
+test:
+    num_samples: 20
+    # sample outputs or choose deterministically?
+    probabilistic: True
+    model_file: output_648.pth

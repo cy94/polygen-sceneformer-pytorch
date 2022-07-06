@@ -1,0 +1,33 @@
+data:
+  # path to pickled bedroom
+  data_path: datasets/suncg_bedroom/
+  out_path: tests/data/scene_outputs
+  list_path: datasets/bedroom_filter.txt
+
+model:
+  start_token: 203
+  stop_token: 202
+  pad_token: 201
+  max_seq_len: 100
+  # Todo: look up max_obj_num
+  max_obj_num: 100
+  cat_num: 28
+  emb_dim: 64
+  dim_fwd: 64
+  num_heads: 4
+  num_blocks: 3
+  dropout: 0.2
+train:
+  batch_size: 32
+  epochs: 150
+  lr: 0.0002
+  resume : null    # lightning_logs/version_58/checkpoints/epoch=95.ckpt
+
+
+
+test:
+  num_samples: 50
+  # sample outputs or choose deterministically?
+  probabilistic: True
+  model_file: lightning_logs/version_148/checkpoints/last.ckpt
+  log_dir: lightning_logs/version_148/

@@ -1,0 +1,56 @@
+data:
+  # path to pickled bedroom
+  data_path: /shared/data/deep-synth/bedroom
+  out_path:  tests/data/scene_outputs
+  list_path: None
+
+model:
+  cat:
+    start_token: 33
+    stop_token: 32
+    pad_token: 31
+  # Todo: look up max_obj_num
+
+  coor:
+    start_token: 203
+    stop_token: 202
+    pad_token: 201
+
+
+  orient:
+    start_token: 363
+    stop_token: 362
+    pad_token: 361
+
+  relation:
+    start_token: 4
+    stop_token: 3
+    pad_token: 2
+
+  max_seq_len: 40
+  max_obj_num: 100
+  cat_num: 28
+  emb_dim: 256
+  dim_fwd: 512
+  num_heads: 8
+  num_blocks: 6
+  dropout: 0.2
+
+train:
+  batch_size: 256
+  epochs: 2000
+  lr: 0.0003
+  resume : null #lightning_logs/version_107/checkpoints/last.ckpt
+  total_len: 5000
+  train_len: 4800
+  l2: 0.0001
+  lr_restart: 4000000
+  warmup: 1000
+
+test:
+  num_samples: 10
+  # sample outputs or choose deterministically?
+  probabilistic: True
+  model_file:  lightning_logs/version_339/checkpoints/last.ckpt
+  log_dir: lightning_logs/version_339/out/
+  nucleus: 0.9

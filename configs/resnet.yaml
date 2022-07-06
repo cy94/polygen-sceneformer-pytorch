@@ -1,0 +1,11 @@
+data:
+    train:
+        gt: /home/chandan/suncg/composite/gt/train
+        preds: /home/chandan/suncg/composite/preds/train
+    val:
+        gt: /home/chandan/suncg/composite/gt/val
+        preds: /home/chandan/suncg/composite/preds/val
+
+
+model:
+    num_input_channels: 6

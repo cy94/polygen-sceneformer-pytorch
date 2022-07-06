@@ -1,0 +1,61 @@
+
+import torch
+import os, os.path as osp
+from torch.utils.data import DataLoader, random_split, Subset
+from transforms.polygen import SortMesh, MeshToSeq, QuantizeVertices8Bit, \
+                            GetFacePositions, MeshToTensor, FilterMesh, RandomScale, \
+                            RandomLinearWarp
+import nonechucks as nc
+from datasets.ply_dataset import plydataset_collate_fn, gen_ply
+from tqdm import tqdm
+from datasets.utils import get_dataset
+from torchvision.transforms import Compose
+from utils.config import read_config
+
+cfg_path = 'tests/configs/polygen.yaml'
+cfg = read_config(cfg_path)
+
+
+vtx_cfg = cfg['model']['vertex_model']
+face_cfg = cfg['model']['face_model']
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+# t = Compose([
+#     FilterMesh(vtx_limit=300, face_limit=400),
+#     RandomScale(low=0.75, high=1.25),
+#     RandomLinearWarp(num_pieces=6, warp_var=0.1),
+#     QuantizeVertices8Bit(remove_duplicates=True, scale=255),
+#     SortMesh(),
+#     GetFacePositions(new_face_token=face_cfg['new_face_token']),
+#     MeshToSeq(vtx_start_token=vtx_cfg['vertex_start_token'],
+#               vtx_stop_token=vtx_cfg['vertex_stop_token'],
+#               vtx_pad_token=vtx_cfg['vertex_pad_token'],
+#               vtx_seq_len=vtx_cfg['max_seq_len'],
+#               new_face_token=face_cfg['new_face_token'],
+#               face_pad_token=face_cfg['face_pad_token'],
+#               face_seq_len=face_cfg['max_face_seq_len'],
+#               face_stop_token=face_cfg['face_stop_token'],
+#               ),
+#     MeshToTensor(),
+# ])
+
+
+data_set = get_dataset(cfg['data'])#, transform=t)
+#safe_data_set = nc.SafeDataset(data_set, eager_eval=True)
+
+#loader = DataLoader( data_set, batch_size=cfg['train']['batch_size'],
+#                        collate_fn=plydataset_collate_fn, drop_last=True,
+#                        num_workers=4)
+i=1
+ply_path_root = '/shared/data/shapenet_aug/ply_table_1/'
+for mesh in tqdm(data_set):
+    if len(mesh['vertices']) <= 800 and len(mesh['faces']) <= 700:
+         ply_path = osp.join(ply_path_root, f'{i}.ply')
+         gen_ply(ply_path=ply_path, vertices=mesh['vertices'], faces=mesh['faces'])
+         i += 1
+        #
+        # break
+        #print(i)
+
+print(i)

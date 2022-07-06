@@ -1,0 +1,7 @@
+data_path: /home/chandan/Documents/datasets/ModelNet10
+
+train:
+    select_data: 128
+    batch_size: 8
+    lr: 0.001
+    epochs: 25

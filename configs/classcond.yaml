@@ -1,0 +1,91 @@
+data:
+    name: ply
+    # path to files
+    classes_file: /shared/data/shapenet_aug/all2/shapenet_classes.txt
+    data_path: /shared/data/shapenet_aug/all2
+    train_list: /shared/data/shapenet_aug/all2/train.txt
+    val_list: /shared/data/shapenet_aug/all2/val.txt
+    out_path: tests/data/outputs
+    # path to read/write models
+    model_dir: tests/data/model_outputs
+    quantize_scale: 255
+
+model:
+    class_conditional: True
+    vertex_model:
+        vertex_start_token: 256
+        vertex_stop_token: 257
+        vertex_pad_token: 258
+        # maximum coordinate sequence length
+        # eg: start z y x z y x stop -> length = 8
+        max_seq_len: 1024
+        # type of embedding: discrete/continuous
+        # (discrete not yet supported)
+        emb_type: continuous
+        # size of the coordinate, position and value embeddings
+        emb_dim: 512
+        # number of possible values for a single coordinate - x, y or z
+        # both inclusive
+        coordinate_range: [0, 255]
+        # max number of vertices generated before discarding the output
+        max_vertices: 300
+        # number of transformer blocks
+        num_blocks: 8
+        # number of attention heads
+        num_heads: 8
+        # dimension of the transformer linear layer
+        dim_fwd: 1024
+        dropout: 0.2
+    face_model:
+        max_face_seq_len: 2048
+        # here use values that dont occur in the usual face seq
+        new_face_token: 256
+        face_stop_token: 257
+        face_pad_token: 258
+        # params of the vertex encoder
+        # number of transformer blocks
+        num_blocks: 6
+        # number of attention heads
+        num_heads: 8
+        # dimension of the transformer linear layer
+        dim_fwd: 512
+        # common size of all embeddings
+        emb_dim: 512
+        # params of the face encoder (same as before)
+        max_face_num: 512
+        max_vtx_per_face: 128
+        num_heads_face: 4
+        num_blocks_face: 8
+        dim_fwd_face: 1024
+        dropout: 0.2
+train:
+    epochs: 100
+    vtx:
+        batch_size: 8
+        val_batch_size: 32
+        val_intv: 100
+        lr: 0.0003
+        l2: 0.0000
+        warmup: 50000
+        lr_restart: 500000
+        # null if not resuming
+        resume: null
+    face:
+        batch_size: 4
+        val_batch_size: 32
+        val_intv: 1000
+        lr: 0.0003
+        l2: 0.0000
+        # batches to warmup
+        warmup: 50000
+        lr_restart: 500000
+        # null if not resuming
+        resume: null
+
+test:
+    num_samples: 10
+    # sample outputs or choose deterministically?
+    probabilistic: True
+    nucleus: 0.9
+    vtx_model_file: lightning_logs/version_231/checkpoints/last.ckpt
+    face_model_file: lightning_logs/version_233/checkpoints/last.ckpt
